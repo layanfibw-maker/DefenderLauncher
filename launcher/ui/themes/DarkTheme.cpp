@@ -50,14 +50,14 @@ QString DarkTheme::name()
 QPalette DarkTheme::colorScheme()
 {
     QPalette darkPalette;
-    darkPalette.setColor(QPalette::Window, QColor(49, 49, 49));
+    darkPalette.setColor(QPalette::Window, QColor(30, 5, 5));
     darkPalette.setColor(QPalette::WindowText, Qt::white);
-    darkPalette.setColor(QPalette::Base, QColor(34, 34, 34));
-    darkPalette.setColor(QPalette::AlternateBase, QColor(42, 42, 42));
+    darkPalette.setColor(QPalette::Base, QColor(25, 5, 5));
+    darkPalette.setColor(QPalette::AlternateBase, QColor(35, 8, 8));
     darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
     darkPalette.setColor(QPalette::ToolTipText, Qt::white);
     darkPalette.setColor(QPalette::Text, Qt::white);
-    darkPalette.setColor(QPalette::Button, QColor(48, 48, 48));
+    darkPalette.setColor(QPalette::Button, QColor(40, 10, 10));
     darkPalette.setColor(QPalette::ButtonText, Qt::white);
     darkPalette.setColor(QPalette::BrightText, Qt::red);
     darkPalette.setColor(QPalette::Link, QColor(200, 50, 50));
@@ -74,7 +74,7 @@ double DarkTheme::fadeAmount()
 
 QColor DarkTheme::fadeColor()
 {
-    return QColor(49, 49, 49);
+    return QColor(30, 5, 5);
 }
 
 bool DarkTheme::hasStyleSheet()
