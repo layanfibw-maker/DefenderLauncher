@@ -39,7 +39,7 @@ set(Launcher_Branding_ICO "program_info/${Launcher_APP_BINARY_NAME}.ico")
 set(Launcher_Branding_ICO "${Launcher_Branding_ICO}" PARENT_SCOPE)
 set(Launcher_Branding_WindowsRC "program_info/${Launcher_APP_BINARY_NAME}.rc" PARENT_SCOPE)
 set(Launcher_Branding_LogoQRC "program_info/${Launcher_APP_BINARY_NAME}.qrc" PARENT_SCOPE)
-set(Launcher_Authors "MultiMC & Prism Launcher Contributors")
+set(Launcher_Authors "DefenderLauncher Contributors")
 
 set(Launcher_Portable_File "program_info/portable.txt" PARENT_SCOPE)
 
