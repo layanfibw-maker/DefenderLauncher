@@ -60,8 +60,8 @@ QPalette DarkTheme::colorScheme()
     darkPalette.setColor(QPalette::Button, QColor(48, 48, 48));
     darkPalette.setColor(QPalette::ButtonText, Qt::white);
     darkPalette.setColor(QPalette::BrightText, Qt::red);
-    darkPalette.setColor(QPalette::Link, QColor(47, 163, 198));
-    darkPalette.setColor(QPalette::Highlight, QColor(150, 219, 89));
+    darkPalette.setColor(QPalette::Link, QColor(200, 50, 50));
+    darkPalette.setColor(QPalette::Highlight, QColor(180, 30, 30));
     darkPalette.setColor(QPalette::HighlightedText, Qt::black);
     darkPalette.setColor(QPalette::PlaceholderText, Qt::darkGray);
     return fadeInactive(darkPalette, fadeAmount(), fadeColor());
@@ -88,6 +88,6 @@ QString DarkTheme::appStyleSheet()
 }
 
 QString DarkTheme::tooltip()
-{
+
     return "";
 }
