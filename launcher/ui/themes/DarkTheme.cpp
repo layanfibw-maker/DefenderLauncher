@@ -88,6 +88,6 @@ QString DarkTheme::appStyleSheet()
 }
 
 QString DarkTheme::tooltip()
-
+{
     return "";
 }
