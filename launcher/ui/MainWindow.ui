@@ -307,10 +307,10 @@
     <iconset theme="server"/>
    </property>
    <property name="text">
-    <string>H�berger un serveur</string>
+    <string>Héberger un serveur</string>
    </property>
    <property name="toolTip">
-    <string>Cr�er et lancer un serveur Minecraft local</string>
+    <string>Créer et lancer un serveur Minecraft local</string>
    </property>
   </action>
   <action name="actionAddFabricInstance">
@@ -318,10 +318,10 @@
     <iconset theme="new"/>
    </property>
    <property name="text">
-    <string>Nouvelle instance Fabric optimisée</string>
+    <string>Nouvelle instance Fabric optimisÃ©e</string>
    </property>
    <property name="toolTip">
-    <string>Créer une instance Fabric avec Sodium, Lithium et plus.</string>
+    <string>CrÃ©er une instance Fabric avec Sodium, Lithium et plus.</string>
    </property>
   </action>
   <action name="actionAddForgeInstance">
@@ -329,10 +329,10 @@
     <iconset theme="new"/>
    </property>
    <property name="text">
-    <string>Nouvelle instance Forge optimisée</string>
+    <string>Nouvelle instance Forge optimisÃ©e</string>
    </property>
    <property name="toolTip">
-    <string>Créer une instance Forge avec Rubidium, Canary et plus.</string>
+    <string>CrÃ©er une instance Forge avec Rubidium, Canary et plus.</string>
    </property>
   </action>
   <action name="actionCheckUpdate">
