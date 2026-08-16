@@ -569,7 +569,7 @@
     <string>Close the current window</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionViewInstanceFolder">
