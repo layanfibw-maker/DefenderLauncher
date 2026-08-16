@@ -39,6 +39,7 @@
  */
 
 #include "Application.h"
+#include "rubis/RubisModInstaller.h"
 #include "BuildConfig.h"
 #include "FileSystem.h"
 
@@ -935,6 +936,12 @@ void MainWindow::addInstance(const QString& url, const QMap<QString, QString>& e
     InstanceTask* creationTask = newInstDlg.extractTask();
     if (creationTask) {
         instanceFromInstanceTask(creationTask);
+        if (extra_info.contains("autoInstallMods") && extra_info["autoInstallMods"] == "true") {
+            auto loader = extra_info.contains("fabricLoader") ? RubisModInstaller::Fabric : RubisModInstaller::Forge;
+            auto* installer = new RubisModInstaller(newInstDlg.instDir(), loader, this);
+            connect(installer, &RubisModInstaller::finished, installer, &QObject::deleteLater);
+            installer->install();
+        }
     }
 }
 
@@ -945,7 +952,7 @@ void MainWindow::on_actionAddInstance_triggered()
 
 void MainWindow::on_actionAddFabricInstance_triggered()
 {
-    addInstance("", {{"fabricVersion", "latest"}, {"autoInstallMods", "sodium,lithium,ferritecore,entityculling"}});
+    addInstance("", {{"fabricLoader", "fabric"}, {"autoInstallMods", "true"}});
 }
 
 void MainWindow::on_actionAddForgeInstance_triggered()
