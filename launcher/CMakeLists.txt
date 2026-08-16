@@ -825,6 +825,7 @@ SET(LAUNCHER_SOURCES
     ui/MainWindow.h
     ui/MainWindow.cpp
     rubis/RubisModInstaller.cpp
+    ui/dialogs/server/HostServerDialog.cpp
     ui/InstanceWindow.h
     ui/InstanceWindow.cpp
     ui/ViewLogWindow.h

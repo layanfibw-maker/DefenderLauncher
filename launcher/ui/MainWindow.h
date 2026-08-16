@@ -39,6 +39,7 @@
  */
 
 #pragma once
+#include "rubis/RubisModInstaller.h"
 
 #include <memory>
 
@@ -97,7 +98,11 @@ class MainWindow : public QMainWindow {
 
     void on_actionAddInstance_triggered();
     void on_actionAddFabricInstance_triggered();
+    void on_actionHostServer_triggered();
     void on_actionAddForgeInstance_triggered();
+private:
+    bool m_pendingModInstall = false;
+    RubisModInstaller::ModLoader m_pendingModLoader = RubisModInstaller::Fabric;
 
     void on_actionREDDIT_triggered();
 

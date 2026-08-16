@@ -40,6 +40,7 @@
 
 #include "Application.h"
 #include "rubis/RubisModInstaller.h"
+#include "ui/dialogs/server/HostServerDialog.h"
 #include "BuildConfig.h"
 #include "FileSystem.h"
 
@@ -950,14 +951,24 @@ void MainWindow::on_actionAddInstance_triggered()
     addInstance();
 }
 
+void MainWindow::on_actionHostServer_triggered()
+{
+    HostServerDialog dialog(this);
+    dialog.exec();
+}
+
 void MainWindow::on_actionAddFabricInstance_triggered()
 {
-    addInstance("", {{"fabricLoader", "fabric"}, {"autoInstallMods", "true"}});
+    m_pendingModInstall = true;
+    m_pendingModLoader = RubisModInstaller::Fabric;
+    addInstance();
 }
 
 void MainWindow::on_actionAddForgeInstance_triggered()
 {
-    addInstance("", {{"forgeVersion", "latest"}, {"autoInstallMods", "rubidium,canary,ferritecore,entityculling"}});
+    m_pendingModInstall = true;
+    m_pendingModLoader = RubisModInstaller::Forge;
+    addInstance();
 }
 
 void MainWindow::processURLs(QList<QUrl> urls)
@@ -1722,6 +1733,15 @@ void MainWindow::instanceChanged(const QModelIndex& current, [[maybe_unused]] co
 void MainWindow::instanceSelectRequest(QString id)
 {
     setSelectedInstanceById(id);
+    if (m_pendingModInstall) {
+        auto inst = APPLICATION->instances()->getInstanceById(id);
+        if (inst) {
+            auto* installer = new RubisModInstaller(inst->instanceRoot(), m_pendingModLoader, this);
+            connect(installer, &RubisModInstaller::finished, installer, &QObject::deleteLater);
+            installer->install();
+        }
+        m_pendingModInstall = false;
+    }
 }
 
 void MainWindow::instanceDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight)

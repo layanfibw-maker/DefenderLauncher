@@ -50,6 +50,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionAddInstance"/>
+   <addaction name="actionManageSkins"/>
+   <addaction name="actionHostServer"/>
    <addaction name="actionAddFabricInstance"/>
    <addaction name="actionAddForgeInstance"/>
    <addaction name="separator"/>
@@ -144,6 +146,8 @@
      <bool>true</bool>
     </property>
     <addaction name="actionAddInstance"/>
+   <addaction name="actionManageSkins"/>
+   <addaction name="actionHostServer"/>
    <addaction name="actionAddFabricInstance"/>
    <addaction name="actionAddForgeInstance"/>
     <addaction name="separator"/>
@@ -296,6 +300,17 @@
    </property>
    <property name="toolTip">
     <string>Add a new instance.</string>
+   </property>
+  </action>
+  <action name="actionHostServer">
+   <property name="icon">
+    <iconset theme="server"/>
+   </property>
+   <property name="text">
+    <string>Héberger un serveur</string>
+   </property>
+   <property name="toolTip">
+    <string>Créer et lancer un serveur Minecraft local</string>
    </property>
   </action>
   <action name="actionAddFabricInstance">
