@@ -96,6 +96,8 @@ class MainWindow : public QMainWindow {
     void on_actionAbout_triggered();
 
     void on_actionAddInstance_triggered();
+    void on_actionAddFabricInstance_triggered();
+    void on_actionAddForgeInstance_triggered();
 
     void on_actionREDDIT_triggered();
 

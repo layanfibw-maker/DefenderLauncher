@@ -943,6 +943,16 @@ void MainWindow::on_actionAddInstance_triggered()
     addInstance();
 }
 
+void MainWindow::on_actionAddFabricInstance_triggered()
+{
+    addInstance("", {{"fabricVersion", "latest"}, {"autoInstallMods", "sodium,lithium,ferritecore,entityculling"}});
+}
+
+void MainWindow::on_actionAddForgeInstance_triggered()
+{
+    addInstance("", {{"forgeVersion", "latest"}, {"autoInstallMods", "rubidium,canary,ferritecore,entityculling"}});
+}
+
 void MainWindow::processURLs(QList<QUrl> urls)
 {
     // NOTE: This loop only processes one dropped file!

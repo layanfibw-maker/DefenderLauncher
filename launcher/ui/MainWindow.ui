@@ -50,6 +50,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionAddInstance"/>
+   <addaction name="actionAddFabricInstance"/>
+   <addaction name="actionAddForgeInstance"/>
    <addaction name="separator"/>
    <addaction name="actionFoldersButton"/>
    <addaction name="actionSettings"/>
@@ -142,6 +144,8 @@
      <bool>true</bool>
     </property>
     <addaction name="actionAddInstance"/>
+   <addaction name="actionAddFabricInstance"/>
+   <addaction name="actionAddForgeInstance"/>
     <addaction name="separator"/>
     <addaction name="actionLaunchInstance"/>
     <addaction name="actionKillInstance"/>
@@ -292,6 +296,28 @@
    </property>
    <property name="toolTip">
     <string>Add a new instance.</string>
+   </property>
+  </action>
+  <action name="actionAddFabricInstance">
+   <property name="icon">
+    <iconset theme="new"/>
+   </property>
+   <property name="text">
+    <string>Nouvelle instance Fabric optimisée</string>
+   </property>
+   <property name="toolTip">
+    <string>Créer une instance Fabric avec Sodium, Lithium et plus.</string>
+   </property>
+  </action>
+  <action name="actionAddForgeInstance">
+   <property name="icon">
+    <iconset theme="new"/>
+   </property>
+   <property name="text">
+    <string>Nouvelle instance Forge optimisée</string>
+   </property>
+   <property name="toolTip">
+    <string>Créer une instance Forge avec Rubidium, Canary et plus.</string>
    </property>
   </action>
   <action name="actionCheckUpdate">
