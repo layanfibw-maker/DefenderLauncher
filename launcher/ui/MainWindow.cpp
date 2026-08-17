@@ -39,6 +39,8 @@
  */
 
 #include "Application.h"
+#include "ui/dialogs/NewInstanceTypeDialog.h"
+#include "rubis/RubisModInstaller.h"
 #include "BuildConfig.h"
 #include "FileSystem.h"
 
@@ -940,7 +942,24 @@ void MainWindow::addInstance(const QString& url, const QMap<QString, QString>& e
 
 void MainWindow::on_actionAddInstance_triggered()
 {
-    addInstance();
+    NewInstanceTypeDialog typeDlg(this);
+    if (typeDlg.exec() != QDialog::Accepted)
+        return;
+    switch (typeDlg.choice()) {
+        case NewInstanceTypeDialog::Fabric:
+            m_pendingModInstall = true;
+            m_pendingModLoader = RubisModInstaller::Fabric;
+            addInstance();
+            break;
+        case NewInstanceTypeDialog::Forge:
+            m_pendingModInstall = true;
+            m_pendingModLoader = RubisModInstaller::Forge;
+            addInstance();
+            break;
+        case NewInstanceTypeDialog::Custom:
+            addInstance();
+            break;
+    }
 }
 
 void MainWindow::processURLs(QList<QUrl> urls)
@@ -1705,6 +1724,15 @@ void MainWindow::instanceChanged(const QModelIndex& current, [[maybe_unused]] co
 void MainWindow::instanceSelectRequest(QString id)
 {
     setSelectedInstanceById(id);
+    if (m_pendingModInstall) {
+        auto inst = APPLICATION->instances()->getInstanceById(id);
+        if (inst) {
+            auto* installer = new RubisModInstaller(inst->instanceRoot(), (RubisModInstaller::ModLoader)m_pendingModLoader, this);
+            connect(installer, &RubisModInstaller::finished, installer, &QObject::deleteLater);
+            installer->install();
+        }
+        m_pendingModInstall = false;
+    }
 }
 
 void MainWindow::instanceDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight)

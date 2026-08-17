@@ -96,6 +96,9 @@ class MainWindow : public QMainWindow {
     void on_actionAbout_triggered();
 
     void on_actionAddInstance_triggered();
+private:
+    bool m_pendingModInstall = false;
+    int m_pendingModLoader = 0;
 
     void on_actionREDDIT_triggered();
 
