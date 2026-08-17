@@ -146,10 +146,6 @@
      <bool>true</bool>
     </property>
     <addaction name="actionAddInstance"/>
-    <addaction name="actionManageSkins"/>
-    <addaction name="actionHostServer"/>
-    <addaction name="actionAddFabricInstance"/>
-    <addaction name="actionAddForgeInstance"/>
     <addaction name="separator"/>
     <addaction name="actionLaunchInstance"/>
     <addaction name="actionKillInstance"/>
