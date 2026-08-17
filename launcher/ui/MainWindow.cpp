@@ -39,9 +39,6 @@
  */
 
 #include "Application.h"
-#include "rubis/RubisModInstaller.h"
-#include "ui/dialogs/server/HostServerDialog.h"
-#include "ui/dialogs/NewInstanceTypeDialog.h"
 #include "BuildConfig.h"
 #include "FileSystem.h"
 
@@ -938,54 +935,11 @@ void MainWindow::addInstance(const QString& url, const QMap<QString, QString>& e
     InstanceTask* creationTask = newInstDlg.extractTask();
     if (creationTask) {
         instanceFromInstanceTask(creationTask);
-        if (extra_info.contains("autoInstallMods") && extra_info["autoInstallMods"] == "true") {
-            auto loader = extra_info.contains("fabricLoader") ? RubisModInstaller::Fabric : RubisModInstaller::Forge;
-            auto* installer = new RubisModInstaller(newInstDlg.instDir(), loader, this);
-            connect(installer, &RubisModInstaller::finished, installer, &QObject::deleteLater);
-            installer->install();
-        }
     }
 }
 
 void MainWindow::on_actionAddInstance_triggered()
 {
-    NewInstanceTypeDialog typeDlg(this);
-    if (typeDlg.exec() != QDialog::Accepted)
-        return;
-    switch (typeDlg.choice()) {
-        case NewInstanceTypeDialog::Fabric:
-            m_pendingModInstall = true;
-            m_pendingModLoader = RubisModInstaller::Fabric;
-            addInstance();
-            break;
-        case NewInstanceTypeDialog::Forge:
-            m_pendingModInstall = true;
-            m_pendingModLoader = RubisModInstaller::Forge;
-            addInstance();
-            break;
-        case NewInstanceTypeDialog::Custom:
-            addInstance();
-            break;
-    }
-}
-
-void MainWindow::on_actionHostServer_triggered()
-{
-    HostServerDialog dialog(this);
-    dialog.exec();
-}
-
-void MainWindow::on_actionAddFabricInstance_triggered()
-{
-    m_pendingModInstall = true;
-    m_pendingModLoader = RubisModInstaller::Fabric;
-    addInstance();
-}
-
-void MainWindow::on_actionAddForgeInstance_triggered()
-{
-    m_pendingModInstall = true;
-    m_pendingModLoader = RubisModInstaller::Forge;
     addInstance();
 }
 
@@ -1751,15 +1705,6 @@ void MainWindow::instanceChanged(const QModelIndex& current, [[maybe_unused]] co
 void MainWindow::instanceSelectRequest(QString id)
 {
     setSelectedInstanceById(id);
-    if (m_pendingModInstall) {
-        auto inst = APPLICATION->instances()->getInstanceById(id);
-        if (inst) {
-            auto* installer = new RubisModInstaller(inst->instanceRoot(), m_pendingModLoader, this);
-            connect(installer, &RubisModInstaller::finished, installer, &QObject::deleteLater);
-            installer->install();
-        }
-        m_pendingModInstall = false;
-    }
 }
 
 void MainWindow::instanceDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight)
