@@ -34,15 +34,15 @@ NewInstanceTypeDialog::NewInstanceTypeDialog(QWidget* parent) : QDialog(parent)
     customBtn->setStyleSheet("text-align: center; font-size: 13px;");
     layout->addWidget(customBtn);
 
-    connect(fabricBtn, &QPushButton::clicked, [this]() {
+    connect(fabricBtn, &QPushButton::clicked, this, [this]() {
         m_choice = Fabric;
         accept();
     });
-    connect(forgeBtn, &QPushButton::clicked, [this]() {
+    connect(forgeBtn, &QPushButton::clicked, this, [this]() {
         m_choice = Forge;
         accept();
     });
-    connect(customBtn, &QPushButton::clicked, [this]() {
+    connect(customBtn, &QPushButton::clicked, this, [this]() {
         m_choice = Custom;
         accept();
     });
