@@ -41,6 +41,7 @@
 #include "Application.h"
 #include "rubis/RubisModInstaller.h"
 #include "ui/dialogs/server/HostServerDialog.h"
+#include "ui/dialogs/NewInstanceTypeDialog.h"
 #include "BuildConfig.h"
 #include "FileSystem.h"
 
@@ -948,7 +949,24 @@ void MainWindow::addInstance(const QString& url, const QMap<QString, QString>& e
 
 void MainWindow::on_actionAddInstance_triggered()
 {
-    addInstance();
+    NewInstanceTypeDialog typeDlg(this);
+    if (typeDlg.exec() != QDialog::Accepted)
+        return;
+    switch (typeDlg.choice()) {
+        case NewInstanceTypeDialog::Fabric:
+            m_pendingModInstall = true;
+            m_pendingModLoader = RubisModInstaller::Fabric;
+            addInstance();
+            break;
+        case NewInstanceTypeDialog::Forge:
+            m_pendingModInstall = true;
+            m_pendingModLoader = RubisModInstaller::Forge;
+            addInstance();
+            break;
+        case NewInstanceTypeDialog::Custom:
+            addInstance();
+            break;
+    }
 }
 
 void MainWindow::on_actionHostServer_triggered()
