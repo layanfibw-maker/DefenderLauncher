@@ -95,17 +95,11 @@ class MainWindow : public QMainWindow {
 
     void on_actionAbout_triggered();
 
+    void on_actionREDDIT_triggered();
+    void on_actionMATRIX_triggered();
+    void on_actionDISCORD_triggered();
     void on_actionAddInstance_triggered();
     void on_actionHostServer_triggered();
-private:
-    bool m_pendingModInstall = false;
-    int m_pendingModLoader = 0;
-
-    void on_actionREDDIT_triggered();
-
-    void on_actionMATRIX_triggered();
-
-    void on_actionDISCORD_triggered();
 
     void on_actionCopyInstance_triggered();
 
@@ -238,6 +232,8 @@ private:
     void instanceFromInstanceTask(InstanceTask* task);
 
    private:
+    bool m_pendingModInstall = false;
+    int m_pendingModLoader = 0;
     Ui::MainWindow* ui;
     // these are managed by Qt's memory management model!
     InstanceView* view = nullptr;
