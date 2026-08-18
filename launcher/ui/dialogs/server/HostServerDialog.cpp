@@ -191,12 +191,13 @@ void HostServerDialog::onOutput()
 
 void HostServerDialog::downloadServerJar(const QString& version)
 {
-    QNetworkAccessManager manager;
+    if (!m_nam) m_nam = new QNetworkAccessManager(this);
+    QNetworkAccessManager& manager = *m_nam;
     QEventLoop loop;
 
     // Cherche l'URL du server jar sur le manifest Mojang
     QNetworkRequest req(QUrl("https://launchermeta.mojang.com/mc/game/version_manifest.json"));
-    auto* reply = manager.get(req);
+    auto* reply = m_nam->get(req);
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
 
@@ -206,7 +207,7 @@ void HostServerDialog::downloadServerJar(const QString& version)
     for (auto v : doc.object()["versions"].toArray()) {
         if (v.toObject()["id"].toString() == version) {
             QString versionUrl = v.toObject()["url"].toString();
-            auto* vReply = manager.get(QNetworkRequest(QUrl(versionUrl)));
+            auto* vReply = m_nam->get(QNetworkRequest(QUrl(versionUrl)));
             connect(vReply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
             loop.exec();
 
@@ -219,7 +220,7 @@ void HostServerDialog::downloadServerJar(const QString& version)
                 return;
             }
 
-            auto* dlReply = manager.get(QNetworkRequest(QUrl(serverUrl)));
+            auto* dlReply = m_nam->get(QNetworkRequest(QUrl(serverUrl)));
             connect(dlReply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
             loop.exec();
 
@@ -239,12 +240,13 @@ void HostServerDialog::downloadServerJar(const QString& version)
 
 void HostServerDialog::downloadFabricJar(const QString& version, const QString& serverDir)
 {
-    QNetworkAccessManager manager;
+    if (!m_nam) m_nam = new QNetworkAccessManager(this);
+    QNetworkAccessManager& manager = *m_nam;
     QEventLoop loop;
 
     // Recupere la derniere version de Fabric loader
     QNetworkRequest req(QUrl("https://meta.fabricmc.net/v2/versions/loader/" + version + "/0.16.5/1.0.1/server/jar"));
-    auto* reply = manager.get(req);
+    auto* reply = m_nam->get(req);
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
 
@@ -272,15 +274,13 @@ void HostServerDialog::downloadForgeJar(const QString& version, const QString& s
 
 void HostServerDialog::downloadPlayit()
 {
+    if (!m_nam) m_nam = new QNetworkAccessManager(this);
     QString playitPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/playit.exe";
     if (QFile::exists(playitPath)) return;
-
-    m_console->append(tr("Telechargement de playit.gg..."));
-    QNetworkAccessManager manager;
     QEventLoop loop;
     QNetworkRequest req(QUrl("https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-windows_64.exe"));
     req.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
-    auto* reply = manager.get(req);
+    auto* reply = m_nam->get(req);
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
 

@@ -28,6 +28,7 @@ private:
     QTextEdit* m_console;
     QComboBox* m_typeBox = nullptr;
     QProcess* m_serverProcess = nullptr;
+    QNetworkAccessManager* m_nam = nullptr;
     QProcess* m_playitProcess = nullptr;
     QLabel* m_ipLabel = nullptr;
     QString m_currentIp;
