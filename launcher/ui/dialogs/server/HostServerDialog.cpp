@@ -101,8 +101,11 @@ void HostServerDialog::onLaunch()
     QString jarPath = serverDir + "/server.jar";
 
     if (!QFile::exists(jarPath)) {
+        m_launchBtn->setEnabled(false);
+        QApplication::processEvents();
         m_console->append(tr("Téléchargement du serveur %1...").arg(version));
         downloadServerJar(version);
+        QApplication::processEvents();
     }
 
     if (!QFile::exists(jarPath)) {
