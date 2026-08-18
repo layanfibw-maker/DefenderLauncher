@@ -17,6 +17,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QNetworkInterface>
+#include <QClipboard>
+#include <QApplication>
 
 HostServerDialog::HostServerDialog(QWidget* parent) : QDialog(parent)
 {
@@ -40,6 +43,14 @@ HostServerDialog::HostServerDialog(QWidget* parent) : QDialog(parent)
     ramLayout->addWidget(m_ramBox);
     layout->addLayout(ramLayout);
 
+    // Type de serveur
+    auto* typeLayout = new QHBoxLayout();
+    typeLayout->addWidget(new QLabel(tr("Type de serveur:")));
+    m_typeBox = new QComboBox();
+    m_typeBox->addItems({tr("Vanilla"), tr("Fabric optimise"), tr("Forge optimise")});
+    typeLayout->addWidget(m_typeBox);
+    layout->addLayout(typeLayout);
+
     // Boutons
     auto* btnLayout = new QHBoxLayout();
     m_launchBtn = new QPushButton(tr("Lancer le serveur"));
@@ -55,7 +66,19 @@ HostServerDialog::HostServerDialog(QWidget* parent) : QDialog(parent)
     m_console->setStyleSheet("background-color: #1a0505; color: #ffffff; font-family: monospace;");
     layout->addWidget(m_console);
 
+    auto* ipLayout = new QHBoxLayout();
+    m_ipLabel = new QLabel(tr("IP locale : -"));
+    m_ipLabel->setStyleSheet("font-weight: bold;");
+    auto* copyBtn = new QPushButton(tr("Copier"));
+    copyBtn->setMaximumWidth(80);
+    ipLayout->addWidget(m_ipLabel);
+    ipLayout->addWidget(copyBtn);
+    layout->addLayout(ipLayout);
+    connect(copyBtn, &QPushButton::clicked, this, [this]() {
+        QApplication::clipboard()->setText(m_currentIp);
+    });
     connect(m_launchBtn, &QPushButton::clicked, this, &HostServerDialog::onLaunch);
+    connect(m_tunnelBtn, &QPushButton::clicked, this, &HostServerDialog::startPlayit);
     connect(m_stopBtn, &QPushButton::clicked, this, &HostServerDialog::onStop);
 }
 
@@ -72,6 +95,7 @@ void HostServerDialog::onLaunch()
 {
     QString version = m_versionBox->currentText();
     QString ram = m_ramBox->text();
+    int serverType = m_typeBox->currentIndex(); // 0=Vanilla, 1=Fabric, 2=Forge
     QString serverDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/servers/" + version;
     QDir().mkpath(serverDir);
     QString jarPath = serverDir + "/server.jar";
@@ -98,11 +122,21 @@ void HostServerDialog::onLaunch()
     connect(m_serverProcess, &QProcess::readyReadStandardOutput, this, &HostServerDialog::onOutput);
     connect(m_serverProcess, &QProcess::readyReadStandardError, this, &HostServerDialog::onOutput);
 
-    QStringList args = {"-Xmx" + ram + "M", "-Xms512M", "-jar", jarPath, "--nogui"};
+    QStringList args = {"-Xmx" + ram + "M", "-Xms512M", "-jar", loaderJar, "--nogui"};
     m_serverProcess->start("java", args);
 
     m_launchBtn->setEnabled(false);
     m_stopBtn->setEnabled(true);
+    m_tunnelBtn->setEnabled(true);
+    for (auto& iface : QNetworkInterface::allInterfaces()) {
+        for (auto& addr : iface.addressEntries()) {
+            if (addr.ip().protocol() == QAbstractSocket::IPv4Protocol && addr.ip().isLoopback() == false) {
+                m_currentIp = addr.ip().toString();
+                m_ipLabel->setText(tr("IP locale : ") + m_currentIp + ":25565");
+                break;
+            }
+        }
+    }
     m_console->append(tr("Serveur lancé sur le port 25565 !"));
     m_console->append(tr("Tes amis peuvent rejoindre avec ton IP locale."));
 }
@@ -117,6 +151,11 @@ void HostServerDialog::onStop()
     }
     m_launchBtn->setEnabled(true);
     m_stopBtn->setEnabled(false);
+    m_tunnelBtn->setEnabled(false);
+    if (m_playitProcess && m_playitProcess->state() == QProcess::Running) {
+        m_playitProcess->kill();
+        m_playitProcess = nullptr;
+    }
     m_console->append(tr("Serveur arrêté."));
 }
 
@@ -162,7 +201,8 @@ void HostServerDialog::downloadServerJar(const QString& version)
             connect(dlReply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
             loop.exec();
 
-            QString serverDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/servers/" + version;
+            int serverType = m_typeBox->currentIndex(); // 0=Vanilla, 1=Fabric, 2=Forge
+    QString serverDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/servers/" + version;
             QFile file(serverDir + "/server.jar");
             if (file.open(QIODevice::WriteOnly)) {
                 file.write(dlReply->readAll());
@@ -174,4 +214,101 @@ void HostServerDialog::downloadServerJar(const QString& version)
         }
     }
     m_console->append(tr("Version introuvable dans le manifest Mojang."));
+}
+
+void HostServerDialog::downloadFabricJar(const QString& version, const QString& serverDir)
+{
+    QNetworkAccessManager manager;
+    QEventLoop loop;
+
+    // Recupere la derniere version de Fabric loader
+    QNetworkRequest req(QUrl("https://meta.fabricmc.net/v2/versions/loader/" + version + "/0.16.5/1.0.1/server/jar"));
+    auto* reply = manager.get(req);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    if (reply->error() != QNetworkReply::NoError) {
+        m_console->append(tr("Erreur telechargement Fabric: ") + reply->errorString());
+        reply->deleteLater();
+        return;
+    }
+
+    QFile file(serverDir + "/fabric-server-launch.jar");
+    if (file.open(QIODevice::WriteOnly)) {
+        file.write(reply->readAll());
+        file.close();
+        m_console->append(tr("Fabric telecharge !"));
+    }
+    reply->deleteLater();
+}
+
+void HostServerDialog::downloadForgeJar(const QString& version, const QString& serverDir)
+{
+    m_console->append(tr("Forge non supporte pour l'instant, lancement en Vanilla."));
+    Q_UNUSED(version);
+    Q_UNUSED(serverDir);
+}
+
+void HostServerDialog::downloadPlayit()
+{
+    QString playitPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/playit.exe";
+    if (QFile::exists(playitPath)) return;
+
+    m_console->append(tr("Telechargement de playit.gg..."));
+    QNetworkAccessManager manager;
+    QEventLoop loop;
+    QNetworkRequest req(QUrl("https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-windows_64.exe"));
+    req.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
+    auto* reply = manager.get(req);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    QFile file(playitPath);
+    if (file.open(QIODevice::WriteOnly)) {
+        file.write(reply->readAll());
+        file.close();
+        m_console->append(tr("playit.gg telecharge !"));
+    }
+    reply->deleteLater();
+}
+
+void HostServerDialog::startPlayit()
+{
+    downloadPlayit();
+    QString playitPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/playit.exe";
+    if (!QFile::exists(playitPath)) {
+        m_console->append(tr("Erreur: playit.exe introuvable."));
+        return;
+    }
+
+    m_playitProcess = new QProcess(this);
+    connect(m_playitProcess, &QProcess::readyReadStandardOutput, this, [this]() {
+        QString output = QString::fromUtf8(m_playitProcess->readAllStandardOutput());
+        m_console->append(output);
+        // Detecter l'adresse du tunnel
+        if (output.contains(".joinmc.link") || output.contains(".playit.gg")) {
+            for (auto& line : output.split('\n')) {
+                if (line.contains(".joinmc.link") || line.contains(".playit.gg")) {
+                    m_ipLabel->setText(tr("Adresse publique : ") + line.trimmed());
+                    m_currentIp = line.trimmed();
+                }
+            }
+        }
+    });
+    connect(m_playitProcess, &QProcess::readyReadStandardError, this, [this]() {
+        QString output = QString::fromUtf8(m_playitProcess->readAllStandardError());
+        m_console->append(output);
+        if (output.contains(".joinmc.link") || output.contains(".playit.gg")) {
+            for (auto& line : output.split('\n')) {
+                if (line.contains(".joinmc.link") || line.contains(".playit.gg")) {
+                    m_ipLabel->setText(tr("Adresse publique : ") + line.trimmed());
+                    m_currentIp = line.trimmed();
+                }
+            }
+        }
+    });
+
+    m_playitProcess->start(playitPath, {});
+    m_console->append(tr("playit.gg lance ! L'adresse publique apparaitra dans la console..."));
+    m_tunnelBtn->setEnabled(false);
 }

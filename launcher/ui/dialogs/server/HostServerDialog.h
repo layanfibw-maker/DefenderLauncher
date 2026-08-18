@@ -6,6 +6,7 @@ class QComboBox;
 class QLineEdit;
 class QPushButton;
 class QTextEdit;
+class QLabel;
 
 class HostServerDialog : public QDialog {
     Q_OBJECT
@@ -23,8 +24,17 @@ private:
     QLineEdit* m_ramBox;
     QPushButton* m_launchBtn;
     QPushButton* m_stopBtn;
+    QPushButton* m_tunnelBtn = nullptr;
     QTextEdit* m_console;
+    QComboBox* m_typeBox = nullptr;
     QProcess* m_serverProcess = nullptr;
+    QProcess* m_playitProcess = nullptr;
+    QLabel* m_ipLabel = nullptr;
+    QString m_currentIp;
 
     void downloadServerJar(const QString& version);
+    void downloadFabricJar(const QString& version, const QString& serverDir);
+    void downloadForgeJar(const QString& version, const QString& serverDir);
+    void startPlayit();
+    void downloadPlayit();
 };
