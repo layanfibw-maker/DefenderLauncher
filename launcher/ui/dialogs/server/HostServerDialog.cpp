@@ -134,6 +134,11 @@ void HostServerDialog::onLaunch()
         eula.close();
     }
 
+    if (m_serverProcess) {
+        m_serverProcess->kill();
+        m_serverProcess->deleteLater();
+        m_serverProcess = nullptr;
+    }
     m_serverProcess = new QProcess(this);
     m_serverProcess->setWorkingDirectory(serverDir);
     connect(m_serverProcess, &QProcess::readyReadStandardOutput, this, &HostServerDialog::onOutput);
