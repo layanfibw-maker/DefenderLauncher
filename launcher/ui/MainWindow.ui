@@ -50,6 +50,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionAddInstance"/>
+   <addaction name="actionHostServer"/>
    <addaction name="separator"/>
    <addaction name="actionFoldersButton"/>
    <addaction name="actionSettings"/>
@@ -292,6 +293,17 @@
    </property>
    <property name="toolTip">
     <string>Add a new instance.</string>
+   </property>
+  </action>
+  <action name="actionHostServer">
+   <property name="icon">
+    <iconset theme="server"/>
+   </property>
+   <property name="text">
+    <string>Heberger un serveur</string>
+   </property>
+   <property name="toolTip">
+    <string>Creer et lancer un serveur Minecraft local</string>
    </property>
   </action>
   <action name="actionCheckUpdate">

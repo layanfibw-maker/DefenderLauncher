@@ -96,6 +96,7 @@ class MainWindow : public QMainWindow {
     void on_actionAbout_triggered();
 
     void on_actionAddInstance_triggered();
+    void on_actionHostServer_triggered();
 private:
     bool m_pendingModInstall = false;
     int m_pendingModLoader = 0;

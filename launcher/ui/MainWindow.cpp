@@ -40,6 +40,7 @@
 
 #include "Application.h"
 #include "ui/dialogs/NewInstanceTypeDialog.h"
+#include "ui/dialogs/server/HostServerDialog.h"
 #include "rubis/RubisModInstaller.h"
 #include "BuildConfig.h"
 #include "FileSystem.h"
@@ -938,6 +939,12 @@ void MainWindow::addInstance(const QString& url, const QMap<QString, QString>& e
     if (creationTask) {
         instanceFromInstanceTask(creationTask);
     }
+}
+
+void MainWindow::on_actionHostServer_triggered()
+{
+    HostServerDialog dialog(this);
+    dialog.exec();
 }
 
 void MainWindow::on_actionAddInstance_triggered()
