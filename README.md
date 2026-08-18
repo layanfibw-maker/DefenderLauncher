@@ -1,7 +1,7 @@
 
 
 <p align="center">
-  <img alt="Rubis Launcher" src="/program_info/rubis.svg" width="40%">
+  <img alt="Rubis Launcher" src="/program_info/rubis.png" width="40%">
 </p>
 
 <h1 align="center">Rubis Launcher</h1>
