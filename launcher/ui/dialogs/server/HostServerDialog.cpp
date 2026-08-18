@@ -110,6 +110,20 @@ void HostServerDialog::onLaunch()
         return;
     }
 
+    // Choisir le jar selon le type
+    QString loaderJar = jarPath;
+    if (serverType == 1) {
+        QString fabricJar = serverDir + "/fabric-server-launch.jar";
+        if (!QFile::exists(fabricJar)) {
+            m_console->append(tr("Telechargement de Fabric..."));
+            downloadFabricJar(version, serverDir);
+        }
+        if (QFile::exists(fabricJar))
+            loaderJar = fabricJar;
+    } else if (serverType == 2) {
+        downloadForgeJar(version, serverDir);
+    }
+
     // Accepter l'EULA
     QFile eula(serverDir + "/eula.txt");
     if (eula.open(QIODevice::WriteOnly)) {
