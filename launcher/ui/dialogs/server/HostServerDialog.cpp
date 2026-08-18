@@ -215,7 +215,6 @@ void HostServerDialog::downloadServerJar(const QString& version)
             connect(dlReply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
             loop.exec();
 
-            int serverType = m_typeBox->currentIndex(); // 0=Vanilla, 1=Fabric, 2=Forge
     QString serverDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/servers/" + version;
             QFile file(serverDir + "/server.jar");
             if (file.open(QIODevice::WriteOnly)) {
