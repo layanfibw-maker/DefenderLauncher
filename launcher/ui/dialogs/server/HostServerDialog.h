@@ -7,6 +7,7 @@ class QLineEdit;
 class QPushButton;
 class QTextEdit;
 class QLabel;
+class QNetworkAccessManager;
 
 class HostServerDialog : public QDialog {
     Q_OBJECT
