@@ -1,6 +1,4 @@
-<p align="center">
-  <img alt="Rubis Launcher" src="/program_info/org.prismlauncher.PrismLauncher.logo.svg" width="40%">
-</p>
+
 
 <h1 align="center">Rubis Launcher</h1>
 
