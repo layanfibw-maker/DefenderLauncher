@@ -210,9 +210,12 @@ void HostServerDialog::launchServer()
 
     if (m_serverProcess) {
         m_serverProcess->kill();
+        m_serverProcess->waitForFinished(3000);
         m_serverProcess->deleteLater();
         m_serverProcess = nullptr;
     }
+    // Tuer tout process java qui tourne dans notre dossier serveur
+    QProcess::execute("taskkill", {"/F", "/FI", "WINDOWTITLE eq " + m_serverDir});
 
     m_serverProcess = new QProcess(this);
     m_serverProcess->setWorkingDirectory(m_serverDir);
