@@ -115,19 +115,22 @@ void HostServerDialog::onLaunch()
 void HostServerDialog::startDownload()
 {
     if (m_step == ManifestStep) {
-        QNetworkRequest req(QUrl("https://launchermeta.mojang.com/mc/game/version_manifest.json"));
+        QUrl url("https://launchermeta.mojang.com/mc/game/version_manifest.json");
+        QNetworkRequest req(url);
         m_nam->get(req);
     } else if (m_step == VersionStep) {
-        QNetworkRequest req(QUrl(m_versionUrl));
+        QUrl url(m_versionUrl);
+        QNetworkRequest req(url);
         m_nam->get(req);
     } else if (m_step == ServerJarStep) {
         m_console->append(tr("Telechargement du server.jar..."));
-        QNetworkRequest req(QUrl(m_serverJarUrl));
+        QUrl url(m_serverJarUrl);
+        QNetworkRequest req(url);
         m_nam->get(req);
     } else if (m_step == FabricStep) {
         m_console->append(tr("Telechargement de Fabric..."));
-        QString url = "https://meta.fabricmc.net/v2/versions/loader/" + m_version + "/0.16.5/1.0.1/server/jar";
-        QNetworkRequest req(QUrl(url));
+        QUrl fabricUrl("https://meta.fabricmc.net/v2/versions/loader/" + m_version + "/0.16.5/1.0.1/server/jar");
+        QNetworkRequest req(fabricUrl);
         m_nam->get(req);
     }
 }
@@ -268,7 +271,8 @@ void HostServerDialog::startPlayit()
     QString playitPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/playit.exe";
     if (!QFile::exists(playitPath)) {
         m_console->append(tr("Telechargement de playit.gg..."));
-        QNetworkRequest req(QUrl("https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-windows_64.exe"));
+        QUrl playitUrl("https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-windows_64.exe");
+        QNetworkRequest req(playitUrl);
         req.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
         m_nam->get(req);
         return;
