@@ -1,13 +1,14 @@
 #pragma once
 #include <QDialog>
 #include <QProcess>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 class QComboBox;
 class QLineEdit;
 class QPushButton;
 class QTextEdit;
 class QLabel;
-class QNetworkAccessManager;
 
 class HostServerDialog : public QDialog {
     Q_OBJECT
@@ -19,6 +20,7 @@ private slots:
     void onLaunch();
     void onStop();
     void onOutput();
+    void onDownloadFinished(QNetworkReply* reply);
 
 private:
     QComboBox* m_versionBox;
@@ -33,10 +35,17 @@ private:
     QProcess* m_playitProcess = nullptr;
     QLabel* m_ipLabel = nullptr;
     QString m_currentIp;
+    QString m_serverDir;
+    QString m_version;
+    int m_serverType = 0;
+    QString m_ram;
 
-    void downloadServerJar(const QString& version);
-    void downloadFabricJar(const QString& version, const QString& serverDir);
-    void downloadForgeJar(const QString& version, const QString& serverDir);
+    enum DownloadStep { ManifestStep, VersionStep, ServerJarStep, FabricStep, Done };
+    DownloadStep m_step = ManifestStep;
+    QString m_versionUrl;
+    QString m_serverJarUrl;
+
+    void startDownload();
+    void launchServer();
     void startPlayit();
-    void downloadPlayit();
 };
