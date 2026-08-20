@@ -192,7 +192,6 @@ void HostServerDialog::onOutput()
 void HostServerDialog::downloadServerJar(const QString& version)
 {
     if (!m_nam) m_nam = new QNetworkAccessManager(this);
-    QNetworkAccessManager& manager = *m_nam;
     QEventLoop loop;
 
     // Cherche l'URL du server jar sur le manifest Mojang
@@ -241,7 +240,6 @@ void HostServerDialog::downloadServerJar(const QString& version)
 void HostServerDialog::downloadFabricJar(const QString& version, const QString& serverDir)
 {
     if (!m_nam) m_nam = new QNetworkAccessManager(this);
-    QNetworkAccessManager& manager = *m_nam;
     QEventLoop loop;
 
     // Recupere la derniere version de Fabric loader
